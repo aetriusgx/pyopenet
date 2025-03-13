@@ -1,0 +1,38 @@
+name: pyopenet-tests
+
+# Run the tests only if code is pushed to the main branch
+on:
+  push:
+    branches:
+      - main
+  
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-runner:
+    name: PyOpenET Test Runner
+    # Only tested on Ubuntu 24 and Windows 11
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # System Setup
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.6.6"
+      - name: Python Setup
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+      # Project Setup
+      - name: Import Secret
+        shell: bash
+        env:
+          ET_KEY: ${{ secrets.ET_KEY }}
+        run: echo "ET_KEY=$ET_KEY" >> .env
+      - name: Install Project
+        run: uv sync --all-extras --dev
+      - name: Run Tests
+        run: uv run pytest --cov

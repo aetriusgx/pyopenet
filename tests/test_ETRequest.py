@@ -134,8 +134,8 @@ def ETRequest_missing_attributes():
 )
 def ETRequest_stress(monkeypatch, cleandir):
     KEY = dotenv_values(f"{cleandir}/.env").get('ET_KEY')
-    assert KEY is not None
-    print(KEY)
+    if not KEY:
+        pytest.skip("No API key found. Check repo config.")
     
     fields = [
         [
