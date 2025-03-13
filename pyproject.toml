@@ -1,0 +1,23 @@
+[project]
+name = "pyopenet"
+version = "0.1.0a1"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Robin Fishman", email = "13447870+aetriusgx@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "gcp-storage-emulator>=2024.8.3",
+    "google-cloud-storage>=3.1.0",
+    "mock>=5.2.0",
+    "pandas>=2.2.3",
+    "pytest-cov>=6.0.0",
+    "python-dotenv>=1.0.1",
+    "requests>=2.32.3",
+    "requests-mock>=1.12.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
