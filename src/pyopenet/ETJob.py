@@ -1,7 +1,7 @@
 from datetime import date
 from logging import Logger
 
-from pandas import DataFrame, concat
+from pandas import DataFrame, MultiIndex, concat
 
 from .ETRequest import Request, format_csv_response, format_json_response
 from .ETTypes import RasterConfigSequence, DateRange
@@ -16,21 +16,23 @@ class ETJob:
         return self._table
 
     def export(self, path: str = "", file_format: str = "csv", **kwargs):
-        if not self._table:
+        if self._table is None:
             raise UnboundLocalError("No table found to export.")
+        
+        path = path.replace("\\", "/")
         
         match file_format.lower():
             case "csv":
-                return self._table.to_csv(path, **kwargs)
+                return self._table.reset_index().to_csv(path, **kwargs)
             case "pkl":
-                return self._table.to_pickle(path, **kwargs)
+                return self._table.reset_index().to_pickle(path, **kwargs)
             case "json":
-                return self._table.to_json(path, **kwargs)
+                return self._table.reset_index().to_json(path, **kwargs)
             case _:
                 raise ValueError(f"File format {file_format} is not supported.")
 
 class RasterTimeseries(ETJob):
-    _RETURN_TABLE_COLUMNS = ["date", "value", "model", "variable", "overpass", "reference", "units"]
+    _RETURN_TABLE_COLUMNS = ["date", "value", "model", "variable", "overpass", "reference_et", "units"]
     _POINT_ENDPOINT = "https://developer.openet-api.org/raster/timeseries/point"
     _POLYGON_ENDPOINT = "https://developer.openet-api.org/raster/timeseries/polygon"
 
@@ -61,13 +63,14 @@ class RasterTimeseries(ETJob):
         self.index = index or table.index.name
         self.geometry = geometry or "geometry"
         self.table = (
-            table.copy().reset_index().set_index(self.index)
-            if self.index
+            table.copy().reset_index().set_index(index)
+            if index
             else table.copy()
         )
 
     def run(self, date: DateRange | list[str | date], logger: Logger | None = None) -> tuple[int, int]:
         self._table = DataFrame([], columns=RasterTimeseries._RETURN_TABLE_COLUMNS)
+        
         success = 0
         fails = 0
         
@@ -101,12 +104,12 @@ class RasterTimeseries(ETJob):
                     data = format_csv_response(res)
                 elif clean_params["file_format"] == "json":
                     data = format_json_response(res)
+                else:
+                    raise ValueError(f"File format {clean_params['file_format']} is not supported.")
                 
-                if not data:
-                    raise ValueError("Error formatting response. Check format type.")
+                parsed_index = MultiIndex.from_tuples([index], names=self.table.index.names) if isinstance(index, tuple) else [index]
                 
                 for row in data:
-                    print(row)
                     self._table = concat([self._table, 
                         DataFrame([
                             [row["time"], 
@@ -114,9 +117,9 @@ class RasterTimeseries(ETJob):
                             clean_params.get("model"), 
                             clean_params.get("variable"), 
                             clean_params.get("overpass"), 
-                            clean_params.get("reference"), 
+                            clean_params.get("reference_et"), 
                             clean_params.get("units")]
-                            ], index=[index], columns=RasterTimeseries._RETURN_TABLE_COLUMNS, dtype=self._table.dtypes)
+                            ], index=parsed_index, columns=RasterTimeseries._RETURN_TABLE_COLUMNS).reset_index()
                         ], ignore_index=True)
         
         return success, fails

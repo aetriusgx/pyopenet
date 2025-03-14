@@ -6,7 +6,7 @@ import time
 import warnings
 
 from logging import Logger, WARNING, ERROR, addLevelName
-from pandas import DataFrame
+from pandas import read_csv
 from requests import Response, post
 from requests.exceptions import Timeout
 from typing import Any, Hashable
@@ -41,7 +41,7 @@ def format_json_response(response: Response) -> list[dict[str, Any]]:
     return json.loads(response.content.decode('utf-8'))
 
 def format_csv_response(response: Response) -> list[dict[str | Hashable, Any]]:
-    return DataFrame(BytesIO(response.content)).to_dict(orient='records')
+    return read_csv(BytesIO(response.content)).to_dict(orient='records')
 
 class Request:
     def __init__(

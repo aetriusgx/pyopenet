@@ -3,12 +3,14 @@ from pyopenet.ETUtils import CloudStorage
 from gcp_storage_emulator.server import Server
 from google.cloud.storage import Client
 
+from collections.abc import Generator
+
 import os
 import pytest
 import requests
 import tempfile
 
-def create_gcp_client(http, **kwargs):
+def create_gcp_client(http, **kwargs) -> Client:
     os.environ["STORAGE_EMULATOR_HOST"] = "http://localhost:9023"
     
     return Client(
@@ -20,18 +22,18 @@ def create_gcp_client(http, **kwargs):
     )
 
 @pytest.fixture(scope="module")
-def module_patch():
+def module_patch() -> Generator[pytest.MonkeyPatch, None, None]:
     with pytest.MonkeyPatch.context() as m:
         yield m
 
 @pytest.fixture(scope="package")
-def session_setup():
+def session_setup() -> Generator[requests.Session, None, None]:
     session = requests.Session()
     
     yield session
 
 @pytest.fixture(scope="module")
-def gcp_server_mock(module_patch, session_setup):
+def gcp_server_mock(module_patch, session_setup) -> Generator[tuple[Server, CloudStorage], None, None]:
     server_session = session_setup
     storage_client = CloudStorage("openet")
     # Overwrite the client in storage_client
@@ -49,7 +51,7 @@ def gcp_server_mock(module_patch, session_setup):
     
 
 @pytest.fixture(scope="module")
-def cleandir():
+def cleandir() -> Generator[str, None, None]:
     """Creates temporary directory for use in testing\
         Yields original value of os.getcwd()
     """

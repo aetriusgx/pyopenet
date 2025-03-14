@@ -12,5 +12,7 @@ wheels/
 .venv
 
 # Developer Files
+.vscode
+
 playground
 **.env

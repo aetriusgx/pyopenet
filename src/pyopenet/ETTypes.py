@@ -118,7 +118,7 @@ class RasterConfigSequence:
     model: list[ModelType] | ModelType
     variable: list[VariableType] | VariableType
     reference_et: list[ReferenceType] | ReferenceType
-    format: list[FileType] | FileType
+    file_format: list[FileType] | FileType
     units: list[UnitType] | UnitType
     overpass: list[bool] | bool = False
     
@@ -127,8 +127,13 @@ class RasterConfigSequence:
     polygon: list[PolygonConfig | None] | PolygonConfig | None = None
     
     def __post_init__(self):
-        if not isinstance(self.polygon, list):
+        if self.polygon and not isinstance(self.polygon, list):
             self.polygon = [self.polygon]
+        if self.geometry and not isinstance(self.geometry, list):
+            self.geometry = [self.geometry]
+        if self.date_range and not isinstance(self.date_range, list):
+            self.date_range = [self.date_range]
+        
         if not isinstance(self.interval, list):
             self.interval = [self.interval]
         if not isinstance(self.model, list):
@@ -137,16 +142,12 @@ class RasterConfigSequence:
             self.variable = [self.variable]
         if not isinstance(self.reference_et, list):
             self.reference_et = [self.reference_et]
-        if not isinstance(self.format, list):
-            self.format = [self.format]
+        if not isinstance(self.file_format, list):
+            self.file_format = [self.file_format]
         if not isinstance(self.units, list):
             self.units = [self.units]
-        if not isinstance(self.geometry, list):
-            self.geometry = [self.geometry]
         if not isinstance(self.overpass, list):
             self.overpass = [self.overpass]
-        if not isinstance(self.date_range, list):
-            self.date_range = [self.date_range]
     
     def __kv__(self):
         return {k: v for k, v in self.__dict__.items() if v is not None}
