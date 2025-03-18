@@ -84,7 +84,6 @@ class Request:
         if not self.header["Authorization"]:
             raise AttributeError("Request has no API key.")
         
-        print(self.params)
         try:
             with interrupt_handler() as interrupted:
                 self.response = post(

@@ -1,7 +1,7 @@
 [project]
 name = "pyopenet"
-version = "0.1.0a1"
-description = "Add your description here"
+version = "0.1.1-beta"
+description = "Retrieve mass amounts of data from OpenET with ease"
 readme = "README.md"
 authors = [
     { name = "Robin Fishman", email = "13447870+aetriusgx@users.noreply.github.com" }
