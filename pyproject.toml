@@ -1,6 +1,6 @@
 [project]
 name = "pyopenet"
-version = "0.1.0a3"
+version = "0.1.1-beta"
 description = "Retrieve mass amounts of data from OpenET with ease"
 readme = "README.md"
 authors = [
