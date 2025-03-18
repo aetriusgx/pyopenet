@@ -1,7 +1,7 @@
-date,value,model,variable,overpass,reference_et,units,OPENET_ID,CROP_2023
-2023-06-01,0.12,ensemble,et,False,cimis,mm,CA_0,47.0
-2023-06-01,0.15,ensemble,et,False,cimis,mm,CA_1,62.0
-2023-06-01,0.13,ensemble,et,False,cimis,mm,CA_2,47.0
-2023-06-01,0.12,ensemble,et,False,cimis,mm,CA_0,47.0
-2023-06-01,0.15,ensemble,et,False,cimis,mm,CA_1,62.0
-2023-06-01,0.13,ensemble,et,False,cimis,mm,CA_2,47.0
+OPENET_ID,CROP_2023,date,model,variable,overpass,reference_et,units,value
+CA_0,47,2023-06-01,ensemble,et,False,cimis,mm,0.12
+CA_1,62,2023-06-01,ensemble,et,False,cimis,mm,0.15
+CA_2,47,2023-06-01,ensemble,et,False,cimis,mm,0.13
+CA_0,47,2023-06-01,ensemble,et,False,cimis,mm,0.12
+CA_1,62,2023-06-01,ensemble,et,False,cimis,mm,0.15
+CA_2,47,2023-06-01,ensemble,et,False,cimis,mm,0.13

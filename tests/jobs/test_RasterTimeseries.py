@@ -126,7 +126,7 @@ class TestRasterTimeseries:
 
         assert "Index column index not found in DataFrame." in str(err.value)
 
-    def test_run_point(self, setup, requests_mock: Mocker, cleandir):
+    def test_run_point(self, setup, requests_mock: Mocker):
         options, in_data, out_data, response_mock, logger = setup
         in_data = in_data.copy().set_index(["OPENET_ID", "CROP_2023"])
         
@@ -144,4 +144,4 @@ class TestRasterTimeseries:
         table = job.get_table()
         assert table is not None
         
-        pdtest.assert_frame_equal(table, out_data, check_dtype=False, check_like=True, check_index_type=False)
+        pdtest.assert_frame_equal(table.reset_index(), out_data, check_dtype=False, check_like=True, check_index_type=False)
