@@ -12,7 +12,28 @@ import pandas as pd
 import sys
 
 def parse_geo(series_like_obj: pd.Series) -> pd.Series:
-    return pd.Series([json.loads(row) for row in series_like_obj])
+    result: pd.Series | list
+    
+    if not isinstance(series_like_obj, pd.Series):
+        raise TypeError(
+            f"Expected pd.Series, got {type(series_like_obj)} instead."
+        )
+    
+    values = series_like_obj.values
+    
+    try:
+        result = [json.loads(row) for row in values]
+    except json.JSONDecodeError:
+        raise ValueError(
+            f"Expected geojson, got {type(values[0])} instead."
+        )
+    
+    if len(result) != len(values):
+        raise
+    
+    result = pd.Series(result, index=series_like_obj.index, name=series_like_obj.name, dtype=object)
+    
+    return result
 
 class CloudStorage:
     def __init__(self, project_id, credentials=None, logger=None):
