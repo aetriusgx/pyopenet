@@ -16,7 +16,7 @@ class ETJob:
         return self._table
 
     def export(self, path: str = "", file_format: str = "csv", **kwargs):
-        if self._table is None:
+        if self._table is None or self._table.empty:
             raise UnboundLocalError("No table found to export.")
         
         path = path.replace("\\", "/")

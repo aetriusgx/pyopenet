@@ -65,7 +65,7 @@ class TestRasterTimeseries:
             options=options, api_key="test", table=in_data, geometry=".geo"
         )
 
-        assert job.get_table() is None
+        assert job.get_table().empty
         assert job.endpoint == RasterTimeseries._POINT_ENDPOINT
 
         with pytest.raises(UnboundLocalError):
@@ -86,7 +86,7 @@ class TestRasterTimeseries:
             options=options, api_key="test", table=in_data, geometry=".geo"
         )
 
-        assert job.get_table() is None
+        assert job.get_table().empty
         assert job.endpoint == RasterTimeseries._POLYGON_ENDPOINT
 
     def test_init_no_geometry(self, setup):
